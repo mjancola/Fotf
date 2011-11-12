@@ -57,34 +57,40 @@ public class Fotf {
 		        				"FROM TASK T, RECENT_COMPLETES L WHERE T.PERSON_ID = " + currentUser.getId() + " AND L.TASK_ID = T.ID AND (SYSDATE - LAST_DATE >= T.INTERVAL) " + 
 		        				"GROUP BY T.NAME, T.ID, INTERVAL ORDER BY (1 - DAYS_OVERDUE)");
 	
-				//Action on the result
-		        System.out.println();
-		        System.out.println("My Due Tasks:");
-		        int i = 1;
 		        // map for storing menu items to task id's so we can act on them
 		        Map<String,Integer> dueTasks = new HashMap<String,Integer>();
-		        System.out.println("\n   TASK NAME                     LAST DONE   DUE DATE    DAYS PAST DUE");
-		        System.out.println("   ---------                     ---------   --------    -------------");
-		        while (rset.next())
-		        {
-					String task_name = rset.getString("name");
-					Integer tid = rset.getInt("id");
-		        	dueTasks.put(String.valueOf(i), tid);
-		        	Date due_date = rset.getDate("due_date");
-		        	Date last_done = rset.getDate("done");
-		        	Integer overdue = rset.getInt("days_overdue");
-					System.out.println(i + ". " + ConsoleUtils.fixWidth(task_name, 28, Boolean.FALSE) + 
-										"  " + last_done + "  " + due_date + "    " + overdue);
-					i++;
+				// if there are any due tasks
+		        if (!rset.next()) {
+		        	System.out.println("\n\nYou have no overdue tasks!");
+			        System.out.println();
+			        System.out.printf("\nEnter ");  // prompt continues after if block
 		        }
-	
-		        System.out.println();
-		        System.out.println("\nEnter the number of a task to complete ");
+		        else {
+			        System.out.println();
+			        System.out.println("My Due Tasks:");
+			        int i = 1;
+			        System.out.println("\n   TASK NAME                     LAST DONE   DUE DATE    DAYS PAST DUE");
+			        System.out.println("   ---------                     ---------   --------    -------------");
+			        do {
+						String task_name = rset.getString("name");
+						Integer tid = rset.getInt("id");
+			        	dueTasks.put(String.valueOf(i), tid);
+			        	Date due_date = rset.getDate("due_date");
+			        	Date last_done = rset.getDate("done");
+			        	Integer overdue = rset.getInt("days_overdue");
+						System.out.println(i + ". " + ConsoleUtils.fixWidth(task_name, 28, Boolean.FALSE) + 
+											"  " + last_done + "  " + due_date + "    " + overdue);
+						i++;
+			        } while (rset.next());
+
+			        System.out.println();
+			        System.out.printf("\nEnter the number of a task to complete\n or ");
+		        } // end of if size=0	
 		        if (currentUser.getAdmin() == Boolean.TRUE) {
 		        	dueTasks.put(ADMIN_KEY, 0);
-		        	System.out.println("or '" + ADMIN_KEY + "' for Admin functions");
+		        	System.out.printf("'" + ADMIN_KEY + "' for Admin functions\n or");
 		        }
-		        System.out.printf("or '" + QUIT_KEY + "' to quit >>");
+		        System.out.printf("'" + QUIT_KEY + "' to quit >>");
 		        dueTasks.put(QUIT_KEY, 0);
 				Scanner in = new Scanner(System.in);
 				String cmd = "";
@@ -194,7 +200,7 @@ public class Fotf {
         //Action on the result
         System.out.println("\nID  NAME     IS ADMIN");
         System.out.println("--  ----     --------");
-        while (rset.next())
+        while (rset.next()) // should always have at least on user since 
         {
         	Integer id = rset.getInt("id");
         	String name = rset.getString("name");
@@ -206,22 +212,26 @@ public class Fotf {
 	public void listTasks() throws SQLException {
         ResultSet rset = myDB.execute("select task.name as tname,interval,reward,person.name as pname,task_type.name as ttname from task,task_type, person where task_type_id = task_type.id and person_id = person.id");
 
-		//Action on the result
-        System.out.println("\nTASK NAME                  INTERVAL  REWARD    PERSON      TASK TYPE");
-        System.out.println("---------                  --------  ------    ------      ---------");
-        while (rset.next())
-        {
-        	String name = rset.getString("tname");
-        	Integer interval = rset.getInt("interval");
-        	Double reward = rset.getDouble("reward");
-        	String person = rset.getString("pname");
-        	String task_type = rset.getString("ttname");
-        	System.out.println(ConsoleUtils.fixWidth(name, 30, Boolean.FALSE) + " " +
-        						ConsoleUtils.fixWidth(String.valueOf(interval), 4, Boolean.FALSE) + " " +
-        						ConsoleUtils.formatDollar(reward, 6) + "      " +
-        						ConsoleUtils.fixWidth(person,10, Boolean.FALSE) + "  " +
-        						task_type);
+        // do we have any tasks?
+        if (!rset.next()) {
+        	System.out.println("\nNo tasks found!");
         }
+        else {
+	        System.out.println("\nTASK NAME                  INTERVAL  REWARD    PERSON      TASK TYPE");
+	        System.out.println("---------                  --------  ------    ------      ---------");
+	        do {
+	        	String name = rset.getString("tname");
+	        	Integer interval = rset.getInt("interval");
+	        	Double reward = rset.getDouble("reward");
+	        	String person = rset.getString("pname");
+	        	String task_type = rset.getString("ttname");
+	        	System.out.println(ConsoleUtils.fixWidth(name, 30, Boolean.FALSE) + " " +
+	        						ConsoleUtils.fixWidth(String.valueOf(interval), 4, Boolean.FALSE) + " " +
+	        						ConsoleUtils.formatDollar(reward, 6) + "      " +
+	        						ConsoleUtils.fixWidth(person,10, Boolean.FALSE) + "  " +
+	        						task_type);
+	        } while (rset.next());
+        } // end of if we have tasks
 	}
 	public void addUser() throws SQLException {
 
@@ -260,23 +270,30 @@ public class Fotf {
             
     	// first show every owner with unpaid tasks
         ResultSet rset = myDB.execute("select id, name, count(*) from person, completed_task where id = payee_id and date_paid is null and amount > 0 group by id, name");
-        // TODO need to not proceed if nothing in the result set
-        System.out.println("\nID NAME      UNPAID TASKS");
-        System.out.println("-- ----      ------------");
+        
+        // are there any to process?
         try {
-			while(rset.next()){
-			    System.out.println(rset.getInt("id") + ". "+
-			    		ConsoleUtils.fixWidth(rset.getString("name"), 10, Boolean.FALSE) + "     " +
-			            rset.getInt("count(*)"));
-			}
+        	if (!rset.next()) {
+	
+	        	System.out.println("\nNo tasks to pay!");
+	        }
+	        else {
+		        System.out.println("\nID NAME      UNPAID TASKS");
+		        System.out.println("-- ----      ------------");
+				do {
+				    System.out.println(rset.getInt("id") + ". "+
+				    		ConsoleUtils.fixWidth(rset.getString("name"), 10, Boolean.FALSE) + "     " +
+				            rset.getInt("count(*)"));
+				} while(rset.next());
+		
+		        // TODO, number users independent of their ID's
+				Integer input = promptForNumberOrBack("\n\nEnter ID of user to process\n or '" + BACK_KEY + "' to go back >>", 9999);
+				if(input != BACK_KEY_VALUE){
+					paymentScreen(input);
+				}
+	        } // end of if any to process
 		} catch (SQLException e) {
 			System.out.println("ERROR retreiving columns from tasks");
-		}
-
-        // TODO, number users independent of their ID's
-		Integer input = promptForNumberOrBack("\n\nEnter ID of user to process\n or '" + BACK_KEY + "' to go back >>", 9999);
-		if(input != BACK_KEY_VALUE){
-			paymentScreen(input);
 		}
     }
 
@@ -290,39 +307,46 @@ public class Fotf {
         Integer taskChoice, fakeChoice;
         myDB.execute("create view toBePaid as select payer_id,date_paid,completed_date as cdate,name,amount,task_id from completed_task join task on id = task_id where payee_id = " + choice + " and amount > 0 and date_paid is null");
         ResultSet rset = myDB.execute("select * from toBePaid");
-        System.out.println("\n\nPayments Due:\n");
-        int count =0;
-        HashMap<Integer, Integer> quickLookUp = new HashMap<Integer, Integer>();
-        //first integer is what appears to user, next one is its ID
-        // TODO determine if there are no rows
-        System.out.println("  COMPLETED DATE  AMOUNT  TASK NAME");
-        System.out.println("  --------------  ------  ---------");
+
+        // are there any payments due to this users?  there should be
         try {
-			while(rset.next()){
-			    count++;
-
-			    System.out.println(count + ". " + rset.getDate("cdate") + 
-			            "     " + ConsoleUtils.formatDollar(rset.getDouble("amount"), 6) + 
-			            "  " + rset.getString("name"));
-
-			    int taskID = rset.getInt("task_id");
-			    quickLookUp.put(count, taskID);
-			}
-		} catch (SQLException e) {
+	        if (!rset.next()) {
+	        	System.out.println("\nSorry, no payments due to this user");
+	        }
+	        else {
+		        System.out.println("\n\nPayments Due:\n");
+		        int count =0;
+		        HashMap<Integer, Integer> quickLookUp = new HashMap<Integer, Integer>();
+		        //first integer is what appears to user, next one is its ID
+		        // TODO determine if there are no rows
+		        System.out.println("  COMPLETED DATE  AMOUNT  TASK NAME");
+		        System.out.println("  --------------  ------  ---------");
+		  		do {
+				    count++;
+	
+				    System.out.println(count + ". " + rset.getDate("cdate") + 
+				            "     " + ConsoleUtils.formatDollar(rset.getDouble("amount"), 6) + 
+				            "  " + rset.getString("name"));
+	
+				    int taskID = rset.getInt("task_id");
+				    quickLookUp.put(count, taskID);
+				} while(rset.next());
+		  		fakeChoice = promptForNumberOrBack("Enter Task Number to pay \nor '" + BACK_KEY + "' to go back >>", count);
+		        if(fakeChoice != BACK_KEY_VALUE){
+		            taskChoice = quickLookUp.get(fakeChoice);
+		            //taskChoice defined when user makes selection
+		            if(taskChoice != null){
+		                myDB.execute("update toBePaid set payer_id = "
+		                        + currentUser.getId() + ", date_paid = SYSDATE where task_id = "+
+		                        taskChoice);
+		            } 
+		        	else {
+		        		System.out.println("ERROR, paid task not found in map!");
+		        	}
+		        }
+	        } // end of if any tasks to pay for
+        } catch (SQLException e) {
 			System.out.println("ERROR printing tasks needing payment");
-		}
-        fakeChoice = promptForNumberOrBack("Enter Task Number to pay \nor '" + BACK_KEY + "' to go back >>", count);
-        if(fakeChoice != BACK_KEY_VALUE){
-            taskChoice = quickLookUp.get(fakeChoice);
-            //taskChoice defined when user makes selection
-            if(taskChoice != null){
-                myDB.execute("update toBePaid set payer_id = "
-                        + currentUser.getId() + ", date_paid = SYSDATE where task_id = "+
-                        taskChoice);
-            } 
-        	else {
-        		System.out.println("ERROR, paid task not found in map!");
-        	}
         }
     }
 
@@ -616,18 +640,20 @@ public class Fotf {
 	 * @throws MalformedURLException
 	 */
 	public static void main(String[] args) throws SQLException, IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, MalformedURLException {
-		if (args.length < 2) {
-			System.out.println("Error, Syntax is 'java Fotf [DB USER] [DB PASSWORD]    optional [APPLICATION USER NAME]'");
+		if (args.length < 3) {
+			System.out.println("Error, Syntax is 'java Fotf [SERVER] [DB USER] [DB PASSWORD]    optional [APPLICATION USER NAME]'");
 			System.exit(0);
 		}
 
-        String user = args[0];
-        String password = args[1];
+        String server = args[0];
+		String user = args[1];
+        String password = args[2];
 		String taskOwner = null;
-		if (args.length > 2) {
-			taskOwner = args[2];
+		if (args.length > 3) {
+			taskOwner = args[3];
 		}
-        DB myDB = new OracleDb("csdb.csc.villanova.edu:1521:csdb", user, password);
+
+        DB myDB = new OracleDb(server, user, password);
 
 		Fotf app = new Fotf(myDB);
 		System.out.println("\n\n   ***Welcome to the Family Task Tracker, by Focus on the Family***\n");

@@ -30,13 +30,16 @@ INSTALLATION AND EXECUTION
 
 BUG/TODO LIST
 -------------
--Test for empty lists and don't display the header
 -Fix entering last_completed date when adding a task
 -Implement Edit/Delete
 -Test with Empty DB
 -Change payment second screen to return to itself
 -Add payall option on payment second screen
 -Add admin option for display all Overdue, sorted by name (or maybe make this the main screen?)
+
+FIX HISTORY
+-----------
+12NOV2011 10:36:00 - Test for empty lists and don't display the header
 
 EOF
 
