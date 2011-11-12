@@ -1,0 +1,117 @@
+/* 
+ * Initial DB for Family Task Tracker Application
+ * 
+ * First purge all tables, then insert
+ *
+ */
+delete from completed_task;
+delete from task;
+delete from task_type;
+delete from person;
+
+insert into person values(1,'Mom','Y');
+insert into person values(2,'Dad','Y');
+insert into person values(3,'Tom','N');
+insert into person values(4,'Joey','N');
+insert into person values(5,'Sally','N');
+insert into person values(6,'Uncle Bob','N');
+insert into person values(7,'Sandra','N');
+
+insert into task_type values(1,'Household Chore - First floor', null);
+insert into task_type values(2,'Household Chore - Second floor', null);
+insert into task_type values(3,'Guest Room Chore', null);
+insert into task_type values(4,'Yard Work', null);
+insert into task_type values(5,'Boat Work', null);
+insert into task_type values(6,'Car Work', null);
+insert into task_type values(7,'Financial', null);
+insert into task_type values(8,'Household Maintenance', null);
+
+insert into task values(1,'Washing Dishes',2,0.5,null,4,1);
+insert into task values(2,'Putting Dishes Away',2,0.5,null,5,1);
+insert into task values(3,'Cleaning Kitchen Tables',4,1,null,1,1);
+insert into task values(4,'Vacuum under Fridge',365,2,null,2,1);
+insert into task values(5,'Clean the chimney',365,20,null,6,1);
+insert into task values(6,'Retirement Fund Adding',30,0,null,2,7);
+insert into task values(7,'Take out the Garbage',7,0.5,null,2,1);
+insert into task values(8,'Weeding',30,10,null,2,4);
+insert into task values(9,'Winterize the Boat',365,10,null,2,5);
+insert into task values(10,'Repack boat trailer bearings',365,40,null,2,5);
+insert into task values(11,'Check Boat Lights',90,2,null,2,5);
+insert into task values(12,'Oil Change in Car',60,5,null,3,6);
+insert into task values(13,'Washing the Car',200,5,null,7,6);
+insert into task values(14,'Bleed the Radiators',150,1,null,1,8);
+insert into task values(15,'Vacuuming the Bedrooms',14,1,null,1,2);
+insert into task values(16,'Vacuuming the Living Room',14,1,null,1,1);
+insert into task values(17,'Change smoke detector battery',90,1,null,2,8);
+insert into task values(18,'Changing the A/C Filters',200,2,null,2,8);
+insert into task values(19,'Scrub the Bathroom Tub',30,4,null,1,2);
+insert into task values(20,'Fertilizing the Lawn',90,10,null,4,4);
+insert into task values(21,'Keyboard Dusting',21,0.5,null,5,8);
+insert into task values(22,'Vacuum Hot Water Vents',30,0.5,null,1,8);
+insert into task values(23,'Change the Computer Password',30,0,null,2,3);
+insert into task values(24,'Organizing Family Movie Night',7,0,null,1,1);
+insert into task values(25,'Car Tire Rotation',60,5,null,2,6);
+insert into task values(26,'Cleaning the Gutters',365,5,null,3,4);
+insert into task values(27,'Power Washing Siding',90,5,null,2,6);
+insert into task values(28,'Power Washing the Patio',90,5,null,2,6);
+insert into task values(29,'Aerating the Lawn',30,1,null,2,6);
+insert into task values(30,'Trimming the Shrubbery',30,5,null,1,6);
+insert into task values(31,'Put away toys, Playroom',7,0,null,5,1);
+insert into task values(32,'Put away toys, Bedroom',14,0,null,5,2);
+insert into task values(33,'Basement Cleaning',14,5,null,7,3);
+insert into task values(34,'Dusting Fans and other Misc.',14,1,null,7,1);
+insert into task values(35,'Cleaning the Cat Box',1,1,null,7,8);
+
+insert into completed_task values(1,1,2,0,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(1,1,3,0.4,'3-Aug-2011','2-Aug-2011');
+insert into completed_task values(1,1,4,0.5,'7-Aug-2011','6-Aug-2011');
+insert into completed_task values(2,2,4,0.5,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(2,2,5,0.5,null,'2-Aug-2011');
+insert into completed_task values(2,1,4,0.5,'7-Aug-2011','6-Aug-2011');
+insert into completed_task values(3,2,1,0,null,'31-Jul-2011');
+insert into completed_task values(3,1,2,1.0,'4-Aug-2011','3-Aug-2011');
+insert into completed_task values(3,2,3,1.0,null,'9-Aug-2011');
+insert into completed_task values(4,2,6,2.0,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(5,1,6,20,'3-Aug-2011','2-Aug-2011');
+insert into completed_task values(6,1,7,0,'2-Aug-2011','1-Aug-2011');
+insert into completed_task values(7,1,2,0,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(7,1,2,0.5,'10-Aug-2011','9-Aug-2011');
+insert into completed_task values(8,1,2,10,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(9,1,2,10,'30-Jul-2011','29-Jul-2011');
+insert into completed_task values(10,1,3,40,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(11,1,6,2,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(12,2,3,5,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(13,1,3,5,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(14,1,2,1,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(15,2,1,0,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(15,2,1,1,null,'15-Aug-2011');
+insert into completed_task values(16,2,1,1,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(16,1,4,1,'16-Aug-2011','15-Aug-2011');
+insert into completed_task values(17,1,2,1,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(18,1,2,2,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(19,2,1,4,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(20,1,2,10,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(21,2,5,0.5,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(22,1,2,0.5,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(23,1,2,0,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(24,2,1,0,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(24,1,5,0,'8-Aug-2011','7-Aug-2011');
+insert into completed_task values(25,3,2,15,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(26,3,2,5,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(27,1,2,5,'3-Aug-2011','2-Aug-2011');
+insert into completed_task values(28,1,2,5,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(29,2,3,1,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(30,2,3,5,'2-Aug-2011','1-Aug-2011');
+insert into completed_task values(31,1,4,0,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(31,1,4,0,'8-Aug-2011','7-Aug-2011');
+insert into completed_task values(31,1,5,0,'20-Aug-2011','19-Aug-2011');
+insert into completed_task values(32,1,5,0,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(32,1,5,0,'8-Aug-2011','7-Aug-2011');
+insert into completed_task values(32,1,4,0,'20-Aug-2011','19-Aug-2011');
+insert into completed_task values(33,1,4,5,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(34,1,7,3,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(34,1,5,2,'10-Aug-2011','9-Aug-2011');
+insert into completed_task values(35,1,7,1,'1-Aug-2011','31-Jul-2011');
+insert into completed_task values(35,1,6,1,'2-Aug-2011','1-Aug-2011');
+insert into completed_task values(35,1,7,1,'3-Aug-2011','2-Aug-2011');
+insert into completed_task values(35,1,6,1,'5-Aug-2011','4-Aug-2011');
