@@ -1,0 +1,42 @@
+Fotf - Focus on the Family
+Family Task Tracker
+11 NOV 2011
+
+This simple command line Java application is a front end for database of 
+family or regularly scheduled tasks in the household.
+
+This application contains classes only in the default package for simplicity
+of uploading to remote servers for a class.
+
+FILE LIST
+---------
+README - this file
+Fotf_Schema.sql - Database schema, originally Oracle, but should be compatible with most or all MySQL databases
+ConsoleUtils.java - class of static utility methods
+DB.java - db interface
+OracleDB.java - Oracle implemention of DB interface
+Person.java - simple classes representing a single user
+Fotf.java - main console application
+initial.sql - (optional) sample initial database state
+
+INSTALLATION AND EXECUTION
+--------------------------
+1. Login to Oracle with 'sqlplus <username> <password>' from a folder where the schema exists.
+2. Import the schema by entering '@Fotf_Schema.sql'.
+3. (optional) Import the test database state by entering '@initial.sql'.
+4. Type 'exit' to quit sqlplus
+5. Compile the application with 'javac Fotf.java'
+6. Execute the application with 'java Fotf <server> <username> <password> [application user]'
+
+BUG/TODO LIST
+-------------
+-Test for empty lists and don't display the header
+-Fix entering last_completed date when adding a task
+-Implement Edit/Delete
+-Test with Empty DB
+-Change payment second screen to return to itself
+-Add payall option on payment second screen
+-Add admin option for display all Overdue, sorted by name (or maybe make this the main screen?)
+
+EOF
+
